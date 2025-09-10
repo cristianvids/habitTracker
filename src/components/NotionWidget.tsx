@@ -56,6 +56,40 @@ const NotionWidget = () => {
     // Method 1: Listen for postMessage
     window.addEventListener('message', handleMessage);
 
+    // Method 1b: Listen via BroadcastChannel if available
+    let bc: BroadcastChannel | null = null;
+    if ('BroadcastChannel' in window) {
+      try {
+        bc = new BroadcastChannel('auth');
+        bc.onmessage = async (event: MessageEvent) => {
+          const data = (event as unknown as MessageEvent).data as any;
+          console.log('Widget received BroadcastChannel message:', data);
+          if (data?.type === 'AUTH_SESSION' && data.access_token && data.refresh_token) {
+            try {
+              const { error } = await supabase.auth.setSession({
+                access_token: data.access_token,
+                refresh_token: data.refresh_token,
+              });
+              if (error) {
+                console.error('Failed to set session via BroadcastChannel:', error);
+              }
+            } catch (e) {
+              console.error('Error calling setSession via BroadcastChannel:', e);
+            }
+            try {
+              if (authPopup && !authPopup.closed) authPopup.close();
+            } catch {}
+            return;
+          }
+          if (data?.type === 'AUTH_SUCCESS') {
+            window.location.reload();
+          }
+        };
+      } catch (e) {
+        console.error('BroadcastChannel setup failed:', e);
+      }
+    }
+
     // Method 2: Poll localStorage for auth success
     const checkAuthSuccess = () => {
       const authSuccess = localStorage.getItem('widget_auth_success');
@@ -77,19 +111,23 @@ const NotionWidget = () => {
       if (pollInterval) {
         clearInterval(pollInterval);
       }
+      if (bc) {
+        try { bc.close(); } catch {}
+      }
     };
   }, [authPopup]);
 
   const openAuthPopup = () => {
     console.log('Opening auth popup...');
-    const popup = window.open('/auth', 'auth', 'width=500,height=600,scrollbars=yes,resizable=yes');
+    const authUrl = `/auth?source=widget`;
+    const popup = window.open(authUrl, 'auth', 'width=500,height=600,scrollbars=yes,resizable=yes');
     setAuthPopup(popup);
     
     // Check if popup was blocked or null
     if (!popup || popup.closed) {
       console.log('Popup blocked, opening in new tab...');
       // Fallback: open in new tab, but still listen for messages
-      const newTab = window.open('/auth', '_blank');
+      const newTab = window.open(authUrl, '_blank');
       setAuthPopup(newTab);
     } else {
       console.log('Popup opened successfully');

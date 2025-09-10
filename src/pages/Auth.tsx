@@ -25,6 +25,23 @@ export default function Auth() {
       console.log('Auth page: User authenticated in popup mode, sending message to parent...');
       // Try multiple communication methods
       try {
+        // Method 0: BroadcastChannel for cross-window communication without relying on opener
+        if ('BroadcastChannel' in window) {
+          try {
+            const bc = new BroadcastChannel('auth');
+            if (session?.access_token && session?.refresh_token) {
+              bc.postMessage({
+                type: 'AUTH_SESSION',
+                access_token: session.access_token,
+                refresh_token: session.refresh_token,
+              });
+            }
+            bc.postMessage({ type: 'AUTH_SUCCESS', user });
+            bc.close();
+          } catch (e) {
+            console.error('BroadcastChannel post failed:', e);
+          }
+        }
         // Method 1: postMessage - include session tokens so the widget can set its own session
         if (session?.access_token && session?.refresh_token) {
           window.opener.postMessage({
