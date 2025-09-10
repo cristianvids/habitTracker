@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function Auth() {
   const [email, setEmail] = useState('');
@@ -22,49 +23,62 @@ export default function Auth() {
   // Handle authentication success in popup mode
   useEffect(() => {
     if (user && isPopup) {
-      console.log('Auth page: User authenticated in popup mode, sending message to parent...');
-      // Try multiple communication methods
-      try {
-        // Method 0: BroadcastChannel for cross-window communication without relying on opener
-        if ('BroadcastChannel' in window) {
+      (async () => {
+        console.log('Auth page: User authenticated in popup mode, sending message to parent...');
+        // Try multiple communication methods
+        try {
+          // Ensure we have the freshest session before broadcasting
+          let broadcastSession = session;
           try {
-            const bc = new BroadcastChannel('auth');
-            if (session?.access_token && session?.refresh_token) {
-              bc.postMessage({
-                type: 'AUTH_SESSION',
-                access_token: session.access_token,
-                refresh_token: session.refresh_token,
-              });
+            const { data } = await supabase.auth.getSession();
+            if (data?.session) {
+              broadcastSession = data.session;
             }
-            bc.postMessage({ type: 'AUTH_SUCCESS', user });
-            bc.close();
-          } catch (e) {
-            console.error('BroadcastChannel post failed:', e);
+          } catch {}
+
+          // Method 0: BroadcastChannel for cross-window communication without relying on opener
+          if ('BroadcastChannel' in window) {
+            try {
+              const bc = new BroadcastChannel('auth');
+              if (broadcastSession?.access_token && broadcastSession?.refresh_token) {
+                bc.postMessage({
+                  type: 'AUTH_SESSION',
+                  access_token: broadcastSession.access_token,
+                  refresh_token: broadcastSession.refresh_token,
+                });
+              }
+              bc.postMessage({ type: 'AUTH_SUCCESS', user });
+              bc.close();
+            } catch (e) {
+              console.error('BroadcastChannel post failed:', e);
+            }
           }
+          // Method 1: postMessage - include session tokens so the widget can set its own session
+          if (broadcastSession?.access_token && broadcastSession?.refresh_token && window.opener) {
+            window.opener.postMessage({
+              type: 'AUTH_SESSION',
+              access_token: broadcastSession.access_token,
+              refresh_token: broadcastSession.refresh_token,
+            }, '*');
+          }
+          // Also send a generic success event for backward compatibility
+          if (window.opener) {
+            window.opener.postMessage({ type: 'AUTH_SUCCESS', user }, '*');
+          }
+        } catch (error) {
+          console.error('postMessage failed:', error);
         }
-        // Method 1: postMessage - include session tokens so the widget can set its own session
-        if (session?.access_token && session?.refresh_token) {
-          window.opener.postMessage({
-            type: 'AUTH_SESSION',
-            access_token: session.access_token,
-            refresh_token: session.refresh_token,
-          }, '*');
+        
+        // Method 2: localStorage (works across tabs/windows on same domain)
+        try {
+          localStorage.setItem('widget_auth_success', Date.now().toString());
+        } catch (e) {
+          // Ignore storage errors in restricted contexts
         }
-        // Also send a generic success event for backward compatibility
-        window.opener.postMessage({ type: 'AUTH_SUCCESS', user }, '*');
-      } catch (error) {
-        console.error('postMessage failed:', error);
-      }
-      
-      // Method 2: localStorage (works across tabs/windows on same domain)
-      try {
-        localStorage.setItem('widget_auth_success', Date.now().toString());
-      } catch (e) {
-        // Ignore storage errors in restricted contexts
-      }
-      
-      // Close popup after delay
-      setTimeout(() => window.close(), 1000);
+        
+        // Close popup after delay
+        setTimeout(() => window.close(), 1000);
+      })();
     } else if (user) {
       console.log('Auth page: User authenticated, redirecting...');
       navigate('/');

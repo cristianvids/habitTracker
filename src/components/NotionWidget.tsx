@@ -21,8 +21,10 @@ const NotionWidget = () => {
     const handleMessage = async (event: MessageEvent) => {
       console.log('Widget received postMessage:', event.data);
 
-      // Only accept messages from same origin
-      if (event.origin !== window.location.origin) return;
+      // Accept messages only from our opened auth popup (safer than strict-origin in multi-domain setups)
+      if (authPopup && event.source !== authPopup) {
+        return;
+      }
 
       // Preferred: receive tokens and set session directly (works even with partitioned storage)
       if (event.data?.type === 'AUTH_SESSION' && event.data.access_token && event.data.refresh_token) {
