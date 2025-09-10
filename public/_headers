@@ -1,3 +1,2 @@
 /*
-  X-Frame-Options: ALLOW-FROM https://www.notion.so https://notion.so https://*.notion.site https://*.notion.so
-  Content-Security-Policy: frame-ancestors https://www.notion.so https://notion.so https://*.notion.site https://*.notion.so; 
+  Content-Security-Policy: frame-ancestors 'self' https://www.notion.so https://notion.so https://*.notion.site https://*.notion.so https://notion.com https://www.notion.com 
