@@ -16,6 +16,9 @@ export default function Auth() {
   const { signIn, signUp, user, session } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const params = new URLSearchParams(window.location.search);
+  const embedded = params.get('embedded') === '1';
+  const returnTo = params.get('returnTo') || '/';
 
   // Check if running in popup mode (either popup or new tab opened from widget)
   const isPopup = window.opener && window.opener !== window;
@@ -81,7 +84,11 @@ export default function Auth() {
       })();
     } else if (user) {
       console.log('Auth page: User authenticated, redirecting...');
-      navigate('/');
+      if (embedded) {
+        navigate(returnTo);
+      } else {
+        navigate('/');
+      }
     }
   }, [user, session, navigate, isPopup]);
 

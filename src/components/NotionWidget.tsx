@@ -121,7 +121,16 @@ const NotionWidget = () => {
 
   const openAuthPopup = () => {
     console.log('Opening auth popup...');
-    const authUrl = `/auth?source=widget`;
+    const authUrl = `/auth?source=widget&returnTo=%2Fwidget`;
+
+    // Detect Notion desktop app or environments that block popups, fall back to in-embed auth
+    const ua = navigator.userAgent || '';
+    const isNotionApp = ua.includes('Notion');
+    if (isNotionApp) {
+      console.log('Detected Notion app, using in-embed auth flow');
+      window.location.href = `/auth?embedded=1&source=widget&returnTo=%2Fwidget`;
+      return;
+    }
     const popup = window.open(authUrl, 'auth', 'width=500,height=600,scrollbars=yes,resizable=yes');
     setAuthPopup(popup);
     
@@ -131,6 +140,11 @@ const NotionWidget = () => {
       // Fallback: open in new tab, but still listen for messages
       const newTab = window.open(authUrl, '_blank');
       setAuthPopup(newTab);
+      // If still blocked, do in-embed as a last resort
+      if (!newTab || newTab.closed) {
+        console.log('New tab also blocked, using in-embed auth flow');
+        window.location.href = `/auth?embedded=1&source=widget&returnTo=%2Fwidget`;
+      }
     } else {
       console.log('Popup opened successfully');
     }
