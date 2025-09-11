@@ -144,17 +144,17 @@ const NotionWidget = () => {
 
   if (loading) {
     return (
-      <div className="w-full h-96 bg-card flex items-center justify-center">
-        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+      <div className="w-full h-48 bg-card flex items-center justify-center">
+        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="w-full h-96 bg-card flex items-center justify-center p-4">
+      <div className="w-full h-48 bg-card flex items-center justify-center p-2">
         <div className="text-center space-y-2">
-          <p className="text-sm text-muted-foreground">Please sign in to view your habits</p>
+          <p className="text-xs text-muted-foreground">Please sign in to view your habits</p>
           <Button size="sm" onClick={openAuthPopup}>
             Sign In
           </Button>
@@ -163,7 +163,7 @@ const NotionWidget = () => {
     );
   }
   return (
-    <HabitTracker />
+    <HabitTracker compact />
   );
 };
 

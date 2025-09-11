@@ -15,7 +15,7 @@ const HABIT_COLORS = [
   '#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#8b5cf6', '#ec4899'
 ];
 
-export function HabitTracker() {
+export function HabitTracker({ compact = false }: { compact?: boolean }) {
   const [newHabitName, setNewHabitName] = useState('');
   const [newHabitColor, setNewHabitColor] = useState(HABIT_COLORS[0]);
   const [editingHabit, setEditingHabit] = useState<any>(null);
@@ -155,40 +155,46 @@ export function HabitTracker() {
   const calendarData = generateCalendarData();
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
-      <div className="max-w-6xl mx-auto space-y-8">
+    <div className={compact ? "bg-background p-2" : "min-h-screen bg-background p-4 md:p-8"}>
+      <div className={compact ? "mx-auto space-y-3" : "max-w-6xl mx-auto space-y-8"}>
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Calendar className="h-5 w-5 text-primary" />
-            <h1 className="text-2xl font-bold">Habit Tracker</h1>
+        <div className={compact ? "flex items-center justify-between gap-2" : "flex items-center justify-between"}>
+          <div className={compact ? "flex items-center gap-1" : "flex items-center gap-2"}>
+            <Calendar className={compact ? "h-4 w-4 text-primary" : "h-5 w-5 text-primary"} />
+            <h1 className={compact ? "text-base font-semibold" : "text-2xl font-bold"}>Habit Tracker</h1>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">
-              Welcome, {user?.email}
-            </span>
-            <Link to="/analytics">
-              <Button variant="outline" size="sm">
-                <BarChart3 className="h-4 w-4 mr-2" />
-                Analytics
+          <div className={compact ? "flex items-center gap-1" : "flex items-center gap-2"}>
+            {!compact && (
+              <span className="text-sm text-muted-foreground">
+                Welcome, {user?.email}
+              </span>
+            )}
+            {!compact && (
+              <Link to="/analytics">
+                <Button variant="outline" size="sm">
+                  <BarChart3 className="h-4 w-4 mr-2" />
+                  Analytics
+                </Button>
+              </Link>
+            )}
+            {!compact && (
+              <Button variant="outline" size="sm" onClick={handleSignOut}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
               </Button>
-            </Link>
-            <Button variant="outline" size="sm" onClick={handleSignOut}>
-              <LogOut className="h-4 w-4 mr-2" />
-              Sign Out
-            </Button>
+            )}
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
               <DialogTrigger asChild>
-                <Button size="sm">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Habit
+                <Button size="sm" className={compact ? "h-8 px-2" : undefined}>
+                  <Plus className={compact ? "h-4 w-4" : "h-4 w-4 mr-2"} />
+                  {!compact && 'Add Habit'}
                 </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Add New Habit</DialogTitle>
+                  <DialogTitle>{compact ? 'Add Habit' : 'Add New Habit'}</DialogTitle>
                 </DialogHeader>
-                <div className="space-y-4">
+                <div className={compact ? "space-y-3" : "space-y-4"}>
                   <div>
                     <Label htmlFor="habit-name">Habit Name</Label>
                     <Input
@@ -205,7 +211,7 @@ export function HabitTracker() {
                         <button
                           key={color}
                           onClick={() => setNewHabitColor(color)}
-                          className={`w-6 h-6 rounded-full ${newHabitColor === color ? 'ring-2 ring-offset-2 ring-primary' : ''}`}
+                          className={`w-5 h-5 rounded-full ${newHabitColor === color ? 'ring-2 ring-offset-2 ring-primary' : ''}`}
                           style={{ backgroundColor: color }}
                         />
                       ))}
@@ -222,52 +228,53 @@ export function HabitTracker() {
 
         {/* Habits List */}
         <Card>
-          <CardHeader>
-            <CardTitle>Your Habits</CardTitle>
+          <CardHeader className={compact ? "p-3" : undefined}>
+            <CardTitle className={compact ? "text-sm" : undefined}>Your Habits</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className={compact ? "p-3 pt-0" : undefined}>
             {habits.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <p>No habits yet. Add your first habit to get started!</p>
+              <div className={compact ? "text-center py-4 text-muted-foreground text-sm" : "text-center py-8 text-muted-foreground"}>
+                <p>{compact ? 'No habits yet.' : 'No habits yet. Add your first habit to get started!'}</p>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className={compact ? "space-y-2" : "space-y-3"}>
                  {habits.map((habit) => {
                    const todayRecord = records[getTodayDate()] || {};
                    const isCompletedToday = todayRecord[habit.id]?.completed || false;
                    
                    return (
-                     <div key={habit.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                       <div className="flex items-center gap-3">
+                     <div key={habit.id} className={compact ? "flex items-center justify-between p-2 bg-muted/50 rounded-md" : "flex items-center justify-between p-3 bg-muted/50 rounded-lg"}>
+                       <div className={compact ? "flex items-center gap-2" : "flex items-center gap-3"}>
                          <div
-                           className="w-4 h-4 rounded-full"
+                           className={compact ? "w-3 h-3 rounded-full" : "w-4 h-4 rounded-full"}
                            style={{ backgroundColor: habit.color }}
                          />
-                         <span className="font-medium">{habit.name}</span>
+                         <span className={compact ? "font-medium text-sm" : "font-medium"}>{habit.name}</span>
                        </div>
-                       <div className="flex items-center gap-2">
+                       <div className={compact ? "flex items-center gap-1" : "flex items-center gap-2"}>
                          <Button
                            variant={isCompletedToday ? "default" : "outline"}
                            size="sm"
                            onClick={() => toggleTodayHabit(habit.id)}
-                           className={isCompletedToday ? "bg-green-600 hover:bg-green-700" : ""}
+                           className={(isCompletedToday ? "bg-green-600 hover:bg-green-700 " : "") + (compact ? "h-8 px-2 text-xs" : "")}
                          >
-                           {isCompletedToday ? "Completed" : "Complete"}
+                           {compact ? (isCompletedToday ? "Done" : "Do") : (isCompletedToday ? "Completed" : "Complete")}
                          </Button>
                          <Button
                            variant="outline"
                            size="sm"
                            onClick={() => startEdit(habit)}
+                           className={compact ? "h-8 w-8 p-0" : undefined}
                          >
-                           <Edit2 className="h-4 w-4" />
+                           <Edit2 className={compact ? "h-4 w-4" : "h-4 w-4"} />
                          </Button>
                          <Button
                            variant="outline"
                            size="sm"
                            onClick={() => handleDeleteHabit(habit.id)}
-                           className="text-destructive hover:text-destructive"
+                           className={(compact ? "h-8 w-8 p-0 " : "") + "text-destructive hover:text-destructive"}
                          >
-                           <Trash2 className="h-4 w-4" />
+                           <Trash2 className={compact ? "h-4 w-4" : "h-4 w-4"} />
                          </Button>
                        </div>
                      </div>
@@ -281,13 +288,13 @@ export function HabitTracker() {
         {/* Calendar */}
         {habits.length > 0 && (
           <Card>
-            <CardHeader>
-              <CardTitle>This Month</CardTitle>
+            <CardHeader className={compact ? "p-3" : undefined}>
+              <CardTitle className={compact ? "text-sm" : undefined}>This Month</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-7 gap-2">
+            <CardContent className={compact ? "p-3 pt-0" : undefined}>
+              <div className={compact ? "grid grid-cols-7 gap-1" : "grid grid-cols-7 gap-2"}>
                 {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-                  <div key={day} className="text-center text-sm font-medium text-muted-foreground p-2">
+                  <div key={day} className={compact ? "text-center text-xs font-medium text-muted-foreground p-1" : "text-center text-sm font-medium text-muted-foreground p-2"}>
                     {day}
                   </div>
                 ))}
@@ -299,17 +306,17 @@ export function HabitTracker() {
                    return (
                      <div
                        key={day.date}
-                       className={`p-2 border rounded-lg ${themeClasses}`}
+                       className={`${compact ? 'p-1 rounded-md' : 'p-2 rounded-lg'} border ${themeClasses}`}
                      >
-                    <div className="text-sm font-medium mb-2">{day.day}</div>
-                    <div className="space-y-1">
+                    <div className={compact ? "text-xs font-medium mb-1" : "text-sm font-medium mb-2"}>{day.day}</div>
+                    <div className={compact ? "space-y-0.5" : "space-y-1"}>
                       {habits.map((habit) => {
                         const isCompleted = day.record[habit.id]?.completed || false;
                         return (
                           <button
                             key={habit.id}
                             onClick={() => toggleHabit(habit.id, day.date)}
-                            className={`w-full h-2 rounded-full ${
+                            className={`w-full ${compact ? 'h-1.5' : 'h-2'} rounded-full ${
                               isCompleted 
                                 ? 'opacity-100' 
                                 : 'opacity-30 hover:opacity-50'
@@ -319,12 +326,12 @@ export function HabitTracker() {
                         );
                       })}
                     </div>
-                    {Object.keys(day.record).length > 0 && (
+                    {!compact && Object.keys(day.record).length > 0 && (
                       <div className="text-xs text-center mt-1 text-muted-foreground">
                         {getCompletionRate(day.record)}%
                       </div>
                     )}
-                   </div>
+                    </div>
                    );
                  })}
               </div>
@@ -338,7 +345,7 @@ export function HabitTracker() {
             <DialogHeader>
               <DialogTitle>Edit Habit</DialogTitle>
             </DialogHeader>
-            <div className="space-y-4">
+            <div className={compact ? "space-y-3" : "space-y-4"}>
               <div>
                 <Label htmlFor="edit-name">Habit Name</Label>
                 <Input
@@ -355,7 +362,7 @@ export function HabitTracker() {
                     <button
                       key={color}
                       onClick={() => setEditColor(color)}
-                      className={`w-6 h-6 rounded-full ${editColor === color ? 'ring-2 ring-offset-2 ring-primary' : ''}`}
+                      className={`w-5 h-5 rounded-full ${editColor === color ? 'ring-2 ring-offset-2 ring-primary' : ''}`}
                       style={{ backgroundColor: color }}
                     />
                   ))}
