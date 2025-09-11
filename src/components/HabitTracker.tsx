@@ -233,8 +233,8 @@ export function HabitTracker({ compact = false }: { compact?: boolean }) {
           </div>
         </div>
 
-        {/* Main Content Grid (non-compact shows side-by-side) */}
-        <div className={compact ? "space-y-3" : "grid grid-cols-1 lg:grid-cols-2 gap-6"}>
+        {/* Main Content Grid (responsive for both modes) */}
+        <div className={compact ? "grid grid-cols-1 sm:grid-cols-2 gap-3" : "grid grid-cols-1 lg:grid-cols-2 gap-6"}>
         {/* Habits List */}
         <Card className={compact ? "bg-[#262626]" : undefined}>
           <CardHeader className={compact ? "p-3" : undefined}>
