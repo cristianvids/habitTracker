@@ -103,7 +103,7 @@ const Analytics = () => {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto p-6 pt-8 space-y-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <TrendingUp className="h-8 w-8 text-primary" />
@@ -136,7 +136,7 @@ const Analytics = () => {
                 <CardTitle className="text-sm font-medium">Total Days</CardTitle>
                 <Calendar className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
-              <CardContent>
+              <CardContent className="bg-[#1f1f1f] rounded-md p-4">
                 <div className="text-2xl font-bold">{overallStats.totalDays}</div>
               </CardContent>
             </Card>
@@ -146,7 +146,7 @@ const Analytics = () => {
                 <CardTitle className="text-sm font-medium">Avg Completion</CardTitle>
                 <Target className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
-              <CardContent>
+              <CardContent className="bg-[#1f1f1f] rounded-md p-4">
                 <div className="text-2xl font-bold">{overallStats.averageCompletion.toFixed(1)}%</div>
               </CardContent>
             </Card>
@@ -156,7 +156,7 @@ const Analytics = () => {
                 <CardTitle className="text-sm font-medium">Gold Days</CardTitle>
                 <Award className="h-4 w-4 text-yellow-500" />
               </CardHeader>
-              <CardContent>
+              <CardContent className="bg-[#1f1f1f] rounded-md p-4">
                 <div className="text-2xl font-bold text-yellow-500">{overallStats.goldDays}</div>
               </CardContent>
             </Card>
@@ -166,7 +166,7 @@ const Analytics = () => {
                 <CardTitle className="text-sm font-medium">Failed Days</CardTitle>
                 <Award className="h-4 w-4 text-destructive" />
               </CardHeader>
-              <CardContent>
+              <CardContent className="bg-[#1f1f1f] rounded-md p-4">
                 <div className="text-2xl font-bold text-destructive">{overallStats.failedDays}</div>
               </CardContent>
             </Card>
@@ -180,7 +180,7 @@ const Analytics = () => {
                 Completion Rate Trends
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="bg-[#1f1f1f] rounded-md p-4">
               {trends.length > 0 ? (
                 <ResponsiveContainer width="100%" height={300}>
                   <LineChart data={trends}>
@@ -226,7 +226,7 @@ const Analytics = () => {
                 Habit Streaks
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="bg-[#1f1f1f] rounded-md p-4">
               {streaks.length > 0 ? (
                 <div className="space-y-4">
                   {streaks.map((streak) => (
@@ -257,7 +257,7 @@ const Analytics = () => {
               <CardHeader>
                 <CardTitle>Weekly Patterns</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="bg-[#1f1f1f] rounded-md p-4">
                 {weeklyPatterns.length > 0 ? (
                   <ResponsiveContainer width="100%" height={200}>
                     <BarChart data={weeklyPatterns}>
@@ -298,7 +298,7 @@ const Analytics = () => {
               <CardHeader>
                 <CardTitle>Achievement Distribution</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="bg-[#1f1f1f] rounded-md p-4">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="flex items-center gap-2">

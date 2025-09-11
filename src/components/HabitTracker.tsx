@@ -250,7 +250,7 @@ export function HabitTracker({ compact = false }: { compact?: boolean }) {
                    const isCompletedToday = todayRecord[habit.id]?.completed || false;
                    
                    return (
-                     <div key={habit.id} className={compact ? "flex items-center justify-between p-2 rounded-md bg-[#1f1f1f] border border-border" : "flex items-center justify-between p-3 bg-muted/50 rounded-lg"}>
+                     <div key={habit.id} className={compact ? "flex items-center justify-between p-2 rounded-md bg-[#1f1f1f] border border-border" : "flex items-center justify-between p-3 rounded-lg bg-[#1f1f1f] border border-border"}>
                        <div className={compact ? "flex items-center gap-2" : "flex items-center gap-3"}>
                          <div
                            className={compact ? "w-3 h-3 rounded-full" : "w-4 h-4 rounded-full"}
@@ -313,7 +313,7 @@ export function HabitTracker({ compact = false }: { compact?: boolean }) {
                    return (
                      <div
                        key={day.date}
-                       className={`${compact ? 'p-1 rounded-md bg-[#1f1f1f]' : 'p-2 rounded-lg'} border ${themeClasses}`}
+                       className={`${compact ? 'p-1 rounded-md bg-[#1f1f1f]' : 'p-2 rounded-lg bg-[#1f1f1f]'} border ${themeClasses}`}
                      >
                     <div className={compact ? "text-xs font-medium mb-1" : "text-sm font-medium mb-2"}>{day.day}</div>
                     <div className={compact ? "space-y-0.5" : "space-y-1"}>
