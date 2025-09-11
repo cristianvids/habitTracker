@@ -318,14 +318,14 @@ export function HabitTracker({ compact = false }: { compact?: boolean }) {
                        className={`${compact ? 'p-1 rounded-md bg-[#1f1f1f]' : 'p-2 rounded-lg bg-[#1f1f1f]'} border ${themeClasses}`}
                      >
                     <div className={compact ? "text-xs font-medium mb-1" : "text-sm font-medium mb-2"}>{day.day}</div>
-                    <div className={compact ? "space-y-0.5" : "space-y-1"}>
+                    <div className={compact ? "flex flex-wrap gap-0.5" : "flex flex-wrap gap-1"}>
                       {habits.map((habit) => {
                         const isCompleted = day.record[habit.id]?.completed || false;
                         return (
                           <button
                             key={habit.id}
                             onClick={() => toggleHabit(habit.id, day.date)}
-                            className={`w-full ${compact ? 'h-1.5' : 'h-2'} rounded-full ${
+                            className={`${compact ? 'w-2.5 h-2.5' : 'w-3 h-3'} ${
                               isCompleted 
                                 ? 'opacity-100' 
                                 : 'opacity-30 hover:opacity-50'
