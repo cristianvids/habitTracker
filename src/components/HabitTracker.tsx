@@ -155,7 +155,7 @@ export function HabitTracker({ compact = false }: { compact?: boolean }) {
   const calendarData = generateCalendarData();
 
   return (
-    <div className={compact ? "bg-background p-2 pt-4" : "min-h-screen bg-background p-4 md:p-8"}>
+    <div className={compact ? "bg-background p-2 pt-8" : "min-h-screen bg-background p-4 md:p-8"}>
       <div className={compact ? "mx-auto space-y-3" : "max-w-6xl mx-auto space-y-8"}>
         {/* Header */}
         <div className={compact ? "flex items-center justify-between gap-2" : "flex items-center justify-between"}>
@@ -233,6 +233,8 @@ export function HabitTracker({ compact = false }: { compact?: boolean }) {
           </div>
         </div>
 
+        {/* Main Content Grid (non-compact shows side-by-side) */}
+        <div className={compact ? "space-y-3" : "grid grid-cols-1 lg:grid-cols-2 gap-6"}>
         {/* Habits List */}
         <Card className={compact ? "bg-[#262626]" : undefined}>
           <CardHeader className={compact ? "p-3" : undefined}>
@@ -345,6 +347,7 @@ export function HabitTracker({ compact = false }: { compact?: boolean }) {
             </CardContent>
           </Card>
         )}
+        </div>
 
         {/* Edit Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
