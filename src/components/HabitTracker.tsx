@@ -215,6 +215,13 @@ export function HabitTracker({ compact = false }: { compact?: boolean }) {
                 </div>
               </DialogContent>
             </Dialog>
+            {compact && (
+              <Link to="/analytics">
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                  <BarChart3 className="h-4 w-4" />
+                </Button>
+              </Link>
+            )}
             {!compact && (
               <Link to="/analytics">
                 <Button variant="outline" size="sm">
@@ -227,7 +234,7 @@ export function HabitTracker({ compact = false }: { compact?: boolean }) {
         </div>
 
         {/* Habits List */}
-        <Card>
+        <Card className={compact ? "bg-[#262626]" : undefined}>
           <CardHeader className={compact ? "p-3" : undefined}>
             <CardTitle className={compact ? "text-sm" : undefined}>Your Habits</CardTitle>
           </CardHeader>
@@ -287,7 +294,7 @@ export function HabitTracker({ compact = false }: { compact?: boolean }) {
 
         {/* Calendar */}
         {habits.length > 0 && (
-          <Card>
+          <Card className={compact ? "bg-[#262626]" : undefined}>
             <CardHeader className={compact ? "p-3" : undefined}>
               <CardTitle className={compact ? "text-sm" : undefined}>This Month</CardTitle>
             </CardHeader>
