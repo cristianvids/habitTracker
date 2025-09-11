@@ -170,14 +170,6 @@ export function HabitTracker({ compact = false }: { compact?: boolean }) {
               </span>
             )}
             {!compact && (
-              <Link to="/analytics">
-                <Button variant="outline" size="sm">
-                  <BarChart3 className="h-4 w-4 mr-2" />
-                  Analytics
-                </Button>
-              </Link>
-            )}
-            {!compact && (
               <Button variant="outline" size="sm" onClick={handleSignOut}>
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
@@ -223,6 +215,14 @@ export function HabitTracker({ compact = false }: { compact?: boolean }) {
                 </div>
               </DialogContent>
             </Dialog>
+            {!compact && (
+              <Link to="/analytics">
+                <Button variant="outline" size="sm">
+                  <BarChart3 className="h-4 w-4 mr-2" />
+                  Analytics
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
 
